@@ -3,7 +3,19 @@ var Validate = function(form) {
   
   this.form = $(form);
   this.hasErrors = false;
-  this.fields = this.form.find('input[type="text"], input[type="radio"], input[type="checkbox"], input[type="email"], input[type="phone"], input[type="number"], select, textarea');
+  this.fields = $();
+  
+  function listFields() {
+    _this.form.find('input[type!="radio"][required], select[required], textarea[required]').each(function() {
+      _this.fields = _this.fields.add($(this));
+      setupValidations($(this));
+    });
+    
+    var radioGroupNames = [];
+    _this.form.find('input[type="radio"][required]').each(function() {
+      
+    });
+  }
   
   function updateData(field, newData) {
     var data = getData(field) || {};
@@ -73,9 +85,7 @@ var Validate = function(form) {
       return false;
     });
     
-    _this.fields.each(function() {
-      setupValidations($(this));
-    });
+    listFields();
   }
   
   this.validateOnBlur = function(boolean) {
