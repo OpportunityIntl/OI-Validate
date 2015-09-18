@@ -5,6 +5,7 @@ var Validate = function(form) {
   
   this.form = $(form);
   this.fields = $();
+  this.errorMessages = [];
   
   /**** Public methods ****/
   
@@ -39,7 +40,8 @@ var Validate = function(form) {
           // if field had already failed validation, don't do anything
           // if it failed for the first time, display error message
           if (data.valid) {
-            _this.displayError(data.element, item.message);
+            _this.displayError(data.element, item.fieldMessage);
+            _this.errorMessages.push(item.formMessage);
             setData(field, {valid: false});
           }
           
@@ -97,12 +99,29 @@ var Validate = function(form) {
   
   // display error message for whole form
   this.displayErrors = function() {
+    // filter error messages to remove duplicates
+    var uniqueMessages = _this.errorMessages.reduce(function(previousValue, currentValue){
+      if (previousValue.indexOf(currentValue) < 0 ) previousValue.push(currentValue);
+      return previousValue;
+    },[]);
     
+    var alert = $('<div>', {class: 'alert error'});
+    alert.append($('<p>').html('<strong>Looks like there are some problems with the highlighted fields. Please address the following errors:</strong>'));
+    
+    var list = $('<ul>');
+    $.each(uniqueMessages, function(index, message) {
+      list.append($('<li>').html(message));
+    });
+    
+    alert.append(list);
+    
+    _this.form.prepend(alert);
   };
   
   // hide error message for whole form
   this.hideErrors = function() {
-    
+    var alert = form.find('.alert.error');
+    alert.remove();
   };
   
   // enable/disable instant field validation
@@ -179,7 +198,8 @@ var Validate = function(form) {
         validation: function() {
           return $(this).val() !== '';
         },
-        message: 'Required field'
+        fieldMessage: 'Required field',
+        formMessage: 'Please fill out missing fields'
       });
     }
     
@@ -213,17 +233,22 @@ var Validate = function(form) {
     
     // add event handler to validate form on submit
     _this.form.submit(function() {
+      // hide form error message
+      _this.hideErrors();
+      
       if (_this.validate()) {
         // form passed validation
         
-        console.log('Success');
+        alert('Form validated');
       } else {
         // form failed validation
+        
+        // display form error message
+        _this.displayErrors();
         
         // set up field validation on blur
         _this.validateOnBlur(true);
         
-        console.log('Failure');
       }
       
       // return false to prevent form from submitting so we can run validations
