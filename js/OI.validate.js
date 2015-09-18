@@ -72,13 +72,15 @@ var Validate = function(form) {
   // display error message on field
   this.displayError = function(field, message) {
     // create new element for error message
-    var errorMessage = $('<div>', {class: 'error-message'});
+    var errorMessage = $('<div>', {class: 'error-message', style: 'display: none'});
     
     // set content for error message
     errorMessage.html(message);
     
     // insert error message after field
     field.after(errorMessage);
+    
+    errorMessage.slideDown(500);
     
     // add error class to field
     field.addClass('error');
@@ -90,7 +92,9 @@ var Validate = function(form) {
     var errorMessage = field.siblings('.error-message');
     
     // remove error message
-    errorMessage.remove();
+    errorMessage.slideUp(500, function() {
+      errorMessage.remove();
+    });
     
     // remove error class from field
     field.removeClass('error');
@@ -105,7 +109,14 @@ var Validate = function(form) {
       return previousValue;
     },[]);
     
-    var alert = $('<div>', {class: 'alert error'});
+    var alert = _this.form.find('.alert.error');
+    if (alert.length === 0) {
+      alert = $('<div>', {class: 'alert error', style: "display: none"});
+      _this.form.prepend(alert);
+    } else {
+      alert.html('');
+    }
+    
     alert.append($('<p>').html('<strong>Looks like there are some problems with the highlighted fields. Please address the following errors:</strong>'));
     
     var list = $('<ul>');
@@ -115,12 +126,12 @@ var Validate = function(form) {
     
     alert.append(list);
     
-    _this.form.prepend(alert);
+    alert.slideDown(500);
   };
   
   // hide error message for whole form
   this.hideErrors = function() {
-    var alert = form.find('.alert.error');
+    var alert = _this.form.find('.alert.error');
     alert.remove();
   };
   
