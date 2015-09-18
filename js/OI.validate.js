@@ -14,20 +14,27 @@ var Validate = function(form) {
     field.data('oi-validate', data);
   }
   
-  function addValidations() {
-    $('[required]').each(function() {
-      updateData($(this), {
-        valid: true,
-        validations: [
-          {
-            validation: function() {
-              return $(this).val() !== '';
-            },
-            message: 'Required field'
-          }
-        ]
+  function setupValidations(field) {
+    var data = {
+      valid: true,
+      validations: [],
+      element: field
+    };
+    
+    if (field.is('[required]')) {
+      data.validations.push({
+        validation: function() {
+          return $(this).val() !== '';
+        },
+        message: 'Required field'
       });
-    });
+    }
+    
+    if (field.is('select')) {
+      data.element = field.parents('.select');
+    }
+    
+    updateData($(field), data);
   }
   
   function getData(field) {
@@ -56,43 +63,61 @@ var Validate = function(form) {
     _this.form.attr('novalidate', 'novalidate');
     
     _this.form.submit(function() {
-      _this.validate();
+      if (_this.validate()) {
+        // form passed validation
+        console.log('Success');
+      } else {
+        // form failed validation
+        console.log('Failure');
+      }
       return false;
+    });
+    
+    _this.fields.each(function() {
+      setupValidations($(this));
     });
   }
   
   this.validateField = function(field) {
     var data = getData(field);
+    var validity = true;
+    // if field has data
     if (data) {
       $.each(data.validations, function(index, item) {
         if (!item.validation.call(field)) {
           if (data.valid) {
-            if (field.is('select')) {
-              displayFieldError(field.parents('.select'), item.message);
-            } else {
-              displayFieldError(field, item.message);
-            }
-            
+            displayFieldError(data.element, item.message);
             updateData(field, {valid: false});
           }
+          
+          validity = false;
         } else {
-          removeFieldError(field);
+          removeFieldError(data.element);
           updateData(field, {valid: true});
+          
+          validity = true;
         }
+        
+        return validity;
       });
     }
+    
+    return validity;
   };
   
   this.validate = function() {
+    var errors = 0;
+    
     _this.fields.each(function() {
-      _this.validateField($(this));
+      if (!_this.validateField($(this))) errors++;
     });
+    
+    return (errors > 0) ? false : true;
   };
   
-  this.fields.on('blur', function() {
+  this.fields.on('blur change', function() {
     _this.validateField($(this));
   });
   
   setupForm();
-  addValidations();
 };
