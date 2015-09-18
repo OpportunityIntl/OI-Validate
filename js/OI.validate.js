@@ -3,7 +3,6 @@ var Validate = function(form) {
   
   this.form = $(form);
   this.hasErrors = false;
-  this.errors = [];
   this.fields = this.form.find('input[type="text"], input[type="radio"], input[type="checkbox"], input[type="email"], input[type="phone"], input[type="number"], select, textarea');
   
   function updateData(field, newData) {
@@ -68,6 +67,7 @@ var Validate = function(form) {
         console.log('Success');
       } else {
         // form failed validation
+        _this.validateOnBlur(true);
         console.log('Failure');
       }
       return false;
@@ -77,6 +77,16 @@ var Validate = function(form) {
       setupValidations($(this));
     });
   }
+  
+  this.validateOnBlur = function(boolean) {
+    if (boolean) {
+      _this.fields.on('blur.validate change.validate', function() {
+        _this.validateField($(this));
+      });
+    } else {
+      _this.fields.off('blur.validate change.validate');
+    }
+  };
   
   this.validateField = function(field) {
     var data = getData(field);
@@ -114,10 +124,6 @@ var Validate = function(form) {
     
     return (errors > 0) ? false : true;
   };
-  
-  this.fields.on('blur change', function() {
-    _this.validateField($(this));
-  });
   
   setupForm();
 };
