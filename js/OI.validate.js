@@ -41,9 +41,10 @@ var Validate = function(form) {
           // if it failed for the first time, display error message
           if (data.valid) {
             _this.displayError(data.element, item.fieldMessage);
-            _this.errorMessages.push(item.formMessage);
             setData(field, {valid: false});
           }
+          
+          _this.errorMessages.push(item.formMessage);
           
           // set validity to false (we'll return this value at the end)
           validity = false;
@@ -60,9 +61,6 @@ var Validate = function(form) {
           // set validity to true
           validity = true;
         }
-        
-        // return validity of field
-        return validity;
       });
     }
     
@@ -211,6 +209,17 @@ var Validate = function(form) {
         },
         fieldMessage: 'Required field',
         formMessage: 'Please fill out missing fields'
+      });
+    }
+    
+    if (field.is('[type="email"]')) {
+      data.validations.push({
+        validation: function() {
+          var re = /^[0-9a-zA-Z][-.+_a-zA-Z0-9]*@([0-9a-zA-Z][-._0-9a-zA-Z]*\.)+[a-zA-Z]{2,6}$/;
+		      return re.test($(this).val());
+        },
+        fieldMessage: 'Invalid email address',
+        formMessage: 'Please enter valid email address'
       });
     }
     
