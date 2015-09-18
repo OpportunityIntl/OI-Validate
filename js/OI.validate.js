@@ -33,30 +33,26 @@ var Validate = function(form) {
     
     // if field has data, run through its validations
     if (data) {
+      
+      // hide field error message
+      _this.hideError(data.element);
+      
       $.each(data.validations, function(index, item) {
         if (!item.validation.call(field)) {
           // field failed this validation
           
-          // if field had already failed validation, don't do anything
-          // if it failed for the first time, display error message
-          if (data.valid) {
-            _this.displayError(data.element, item.fieldMessage);
-            setData(field, {valid: false});
-          }
-          
+          _this.displayError(data.element, item.fieldMessage);
           _this.errorMessages.push(item.formMessage);
+          
+          setData(field, {valid: false});
           
           // set validity to false (we'll return this value at the end)
           validity = false;
         } else {
           // field passed this validation
           
-          // if field had already failed validation, remove error message
-          // otherwise, do nothing
-          if (!data.valid) {
-            _this.hideError(data.element);
-            setData(field, {valid: true});
-          }
+          _this.hideError(data.element);
+          setData(field, {valid: true});
           
           // set validity to true
           validity = true;
@@ -131,6 +127,7 @@ var Validate = function(form) {
   this.hideErrors = function() {
     var alert = _this.form.find('.alert.error');
     alert.remove();
+    _this.errorMessages = [];
   };
   
   // enable/disable instant field validation
