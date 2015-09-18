@@ -35,13 +35,13 @@ var Validate = function(form) {
     if (data) {
       
       // hide field error message
-      _this.hideError(data.element);
+      _this.hideError(field);
       
       $.each(data.validations, function(index, item) {
         if (!item.validation.call(field)) {
           // field failed this validation
           
-          _this.displayError(data.element, item.fieldMessage);
+          _this.displayError(field, item.fieldMessage);
           _this.errorMessages.push(item.formMessage);
           
           setData(field, {valid: false});
@@ -51,7 +51,7 @@ var Validate = function(form) {
         } else {
           // field passed this validation
           
-          _this.hideError(data.element);
+          _this.hideError(field);
           setData(field, {valid: true});
           
           // set validity to true
@@ -65,6 +65,8 @@ var Validate = function(form) {
   
   // display error message on field
   this.displayError = function(field, message) {
+    var data = getData(field);
+    
     // create new element for error message
     var errorMessage = $('<div>', {class: 'error-message', style: 'display: none'});
     
@@ -72,18 +74,20 @@ var Validate = function(form) {
     errorMessage.html(message);
     
     // insert error message after field
-    field.after(errorMessage);
+    data.element.after(errorMessage);
     
     errorMessage.slideDown(500);
     
     // add error class to field
-    field.addClass('error');
+    data.element.addClass('error');
   };
   
   // hide error message on field
   this.hideError = function(field) {
+    var data = getData($(field));
+    
     // get error message object (it's a sibling of the field)
-    var errorMessage = field.siblings('.error-message');
+    var errorMessage = data.element.siblings('.error-message');
     
     // remove error message
     errorMessage.slideUp(500, function() {
@@ -91,7 +95,7 @@ var Validate = function(form) {
     });
     
     // remove error class from field
-    field.removeClass('error');
+    data.element.removeClass('error');
     
   };
   
@@ -128,6 +132,10 @@ var Validate = function(form) {
     var alert = _this.form.find('.alert.error');
     alert.remove();
     _this.errorMessages = [];
+    
+    _this.fields.each(function(index, field) {
+      _this.hideError(field);
+    });
   };
   
   // enable/disable instant field validation
@@ -252,6 +260,9 @@ var Validate = function(form) {
     _this.form.submit(function() {
       // hide form error message
       _this.hideErrors();
+      
+      // remove field validation on blur (to prevent multiple handlers building up)
+      _this.validateOnBlur(false);
       
       if (_this.validate()) {
         // form passed validation
