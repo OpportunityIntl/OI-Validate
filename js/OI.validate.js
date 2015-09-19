@@ -46,7 +46,10 @@ var Validate = function(form, options) {
         if (!item.validation.call(field)) {
           // field failed this validation
           
+          // display field error
           _this.displayError(field, item.fieldMessage);
+          
+          // add message for alert
           _this.errorMessages.push(item.formMessage);
           
           setData(field, {valid: false});
@@ -56,7 +59,9 @@ var Validate = function(form, options) {
         } else {
           // field passed this validation
           
+          // hide field error
           _this.hideError(field);
+          
           setData(field, {valid: true});
           
           // set validity to true
@@ -70,6 +75,7 @@ var Validate = function(form, options) {
   
   // display error message on field
   this.displayError = function(field, message) {
+    // get plugin data for this field
     var data = getData(field);
     
     // create new element for error message
@@ -81,6 +87,7 @@ var Validate = function(form, options) {
     // insert error message after field
     data.element.after(errorMessage);
     
+    // show error message
     errorMessage.slideDown(500);
     
     // add error class to field
@@ -112,37 +119,51 @@ var Validate = function(form, options) {
       return previousValue;
     },[]);
     
+    // generate alert message string
     var message = "<p><strong>Looks like there are some problems with the highlighted fields. Please address the following errors:</strong></p>";
     message += "<ul>";
     $.each(uniqueMessages, function(index, errorMessage) {
       message += "<li>" + errorMessage + "</li>";
     });
     message += "</ul>";
+    
+    // show alert
     _this.alert(message);
   };
   
+  // show alert
   this.alert = function(message, type) {
     // create alert div, or empty it if it already exists
     var alert = _this.form.find('.alert');
     
+    // if alert already exists, remove it
     if (alert.length > 0) {
       alert.remove();
     }
     
+    // create alert element
     alert = $('<div>', {class: 'alert ' + (type ? type : 'error'), style: "display: none"});
+    
+    // prepend alert to form
     _this.form.prepend(alert);
     
+    // set alert content
     alert.html(message);
     
+    // show alert
     alert.slideDown(500);
   };
   
   // hide error message for whole form
   this.hideErrors = function() {
+    // remove alert
     var alert = _this.form.find('.alert.error');
     alert.remove();
+    
+    // empty error messages array
     _this.errorMessages = [];
     
+    // hide field errors
     _this.fields.each(function(index, field) {
       _this.hideError(field);
     });
