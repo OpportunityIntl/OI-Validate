@@ -2,6 +2,7 @@ var Validate = function(form, options) {
   var _this = this;
   
   this.options = $.extend({
+    onInit: function() {},
     onError: function() {},
     onSuccess: function() {},
     showAlert: showAlert,
@@ -332,6 +333,8 @@ var Validate = function(form, options) {
     });
     
     addFields();
+    
+    _this.options.onInit.call(_this);
   }
   
   setupForm();
