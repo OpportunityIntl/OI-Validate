@@ -121,16 +121,16 @@ var Validate = function(form, options) {
     _this.alert(message);
   };
   
-  this.alert = function(message) {
+  this.alert = function(message, type) {
     // create alert div, or empty it if it already exists
-    var alert = _this.form.find('.alert.error');
+    var alert = _this.form.find('.alert');
     
-    if (alert.length === 0) {
-      alert = $('<div>', {class: 'alert error', style: "display: none"});
-      _this.form.prepend(alert);
-    } else {
-      alert.html('');
+    if (alert.length > 0) {
+      alert.remove();
     }
+    
+    alert = $('<div>', {class: 'alert ' + (type ? type : 'error'), style: "display: none"});
+    _this.form.prepend(alert);
     
     alert.html(message);
     
