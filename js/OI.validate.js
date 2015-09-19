@@ -105,13 +105,8 @@ var Validate = function(form, options) {
   };
   
   // display error message for whole form
-  this.displayErrors = function() {
-    // filter error messages to remove duplicates
-    var uniqueMessages = _this.errorMessages.reduce(function(previousValue, currentValue){
-      if (previousValue.indexOf(currentValue) < 0 ) previousValue.push(currentValue);
-      return previousValue;
-    },[]);
-    
+  this.displayErrors = function(message) {
+    // create alert div, or empty it if it already exists
     var alert = _this.form.find('.alert.error');
     if (alert.length === 0) {
       alert = $('<div>', {class: 'alert error', style: "display: none"});
@@ -120,14 +115,26 @@ var Validate = function(form, options) {
       alert.html('');
     }
     
-    alert.append($('<p>').html('<strong>Looks like there are some problems with the highlighted fields. Please address the following errors:</strong>'));
-    
-    var list = $('<ul>');
-    $.each(uniqueMessages, function(index, message) {
-      list.append($('<li>').html(message));
-    });
-    
-    alert.append(list);
+    // if message has been passed to this function, put that in the alert div
+    // otherwise, generate alert content from form errors
+    if (message) {
+      alert.append(message);
+    } else {
+      // filter error messages to remove duplicates
+      var uniqueMessages = _this.errorMessages.reduce(function(previousValue, currentValue){
+        if (previousValue.indexOf(currentValue) < 0 ) previousValue.push(currentValue);
+        return previousValue;
+      },[]);
+      
+      alert.append($('<p>').html('<strong>Looks like there are some problems with the highlighted fields. Please address the following errors:</strong>'));
+      
+      var list = $('<ul>');
+      $.each(uniqueMessages, function(index, message) {
+        list.append($('<li>').html(message));
+      });
+      
+      alert.append(list);
+    }
     
     alert.slideDown(500);
   };
