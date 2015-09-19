@@ -52,8 +52,6 @@ var Validate = function(form, options) {
           // add message for alert
           _this.errorMessages.push(item.formMessage);
           
-          setData(field, {valid: false});
-          
           // set validity to false (we'll return this value at the end)
           validity = false;
         } else {
@@ -61,8 +59,6 @@ var Validate = function(form, options) {
           
           // hide field error
           _this.hideError(field);
-          
-          setData(field, {valid: true});
           
           // set validity to true
           validity = true;
@@ -232,7 +228,6 @@ var Validate = function(form, options) {
     
     // define default plugin data
     var data = {
-      valid: true,
       validations: [],
       element: field
     };
