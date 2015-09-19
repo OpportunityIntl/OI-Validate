@@ -4,26 +4,8 @@ var Validate = function(form, options) {
   this.options = $.extend({
     onError: function() {},
     onSuccess: function() {},
-    showAlert: function(message, classes) {
-      // create alert div, or empty it if it already exists
-      var alert = $(this).find('.alert');
-      
-      // if alert already exists, remove it
-      if (alert.length > 0) {
-        alert.remove();
-      }
-      
-      // create alert element
-      alert = $('<div>', {class: 'alert ' + (classes ? classes : 'error'), style: "display: none"});
-      
-      // prepend alert to form
-      $(this).prepend(alert);
-      
-      // set alert content
-      alert.html(message);
-      
-      alert.slideDown(500);
-    }
+    showAlert: showAlert,
+    hideAlert: hideAlert
   }, options);
   
   /**** Public attributes ****/
@@ -153,11 +135,13 @@ var Validate = function(form, options) {
     _this.options.showAlert.call(_this.form, message, classes);
   };
   
+  this.hideAlert = function() {
+    _this.options.hideAlert.call(_this.form);
+  };
+  
   // hide error message for whole form
   this.hideErrors = function() {
-    // remove alert
-    var alert = _this.form.find('.alert.error');
-    alert.remove();
+    _this.hideAlert();
     
     // empty error messages array
     _this.errorMessages = [];
@@ -280,6 +264,36 @@ var Validate = function(form, options) {
     });
   }
   
+  // default callback to show alert
+  function showAlert(message, classes) {
+    // create alert div, or empty it if it already exists
+    var alert = $(this).find('.alert');
+    
+    // if alert already exists, remove it
+    if (alert.length > 0) {
+      alert.remove();
+    }
+    
+    // create alert element
+    alert = $('<div>', {class: 'alert ' + (classes ? classes : 'error'), style: "display: none"});
+    
+    // prepend alert to form
+    $(this).prepend(alert);
+    
+    // set alert content
+    alert.html(message);
+    
+    alert.slideDown(500);
+  }
+  
+  // default callback to hide alert
+  function hideAlert() {
+    var alert = $(this).find('.alert');
+    alert.slideUp(500, function() {
+      alert.remove();
+    });
+  }
+  
   // set up submit handler and other misc things on form
   function setupForm() {
     // add 'novalidate' attribute to form to prevent native browser error handling
@@ -296,6 +310,7 @@ var Validate = function(form, options) {
       if (_this.validate()) {
         // form passed validation
         
+        // execute success callback
         if (typeof _this.options.onSuccess === 'function') _this.options.onSuccess.call(_this);
         
       } else {
@@ -307,6 +322,7 @@ var Validate = function(form, options) {
         // set up field validation on blur
         _this.validateOnBlur(true);
         
+        // execute error callback
         if (typeof _this.options.onError === 'function') _this.options.onError.call(_this);
         
       }
