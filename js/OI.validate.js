@@ -3,7 +3,27 @@ var Validate = function(form, options) {
   
   this.options = $.extend({
     onError: function() {},
-    onSuccess: function() {}
+    onSuccess: function() {},
+    showAlert: function(message, classes) {
+      // create alert div, or empty it if it already exists
+      var alert = $(this).find('.alert');
+      
+      // if alert already exists, remove it
+      if (alert.length > 0) {
+        alert.remove();
+      }
+      
+      // create alert element
+      alert = $('<div>', {class: 'alert ' + (classes ? classes : 'error'), style: "display: none"});
+      
+      // prepend alert to form
+      $(this).prepend(alert);
+      
+      // set alert content
+      alert.html(message);
+      
+      alert.slideDown(500);
+    }
   }, options);
   
   /**** Public attributes ****/
@@ -128,26 +148,9 @@ var Validate = function(form, options) {
   };
   
   // show alert
-  this.alert = function(message, type) {
-    // create alert div, or empty it if it already exists
-    var alert = _this.form.find('.alert');
-    
-    // if alert already exists, remove it
-    if (alert.length > 0) {
-      alert.remove();
-    }
-    
-    // create alert element
-    alert = $('<div>', {class: 'alert ' + (type ? type : 'error'), style: "display: none"});
-    
-    // prepend alert to form
-    _this.form.prepend(alert);
-    
-    // set alert content
-    alert.html(message);
-    
-    // show alert
-    alert.slideDown(500);
+  this.alert = function(message, classes) {    
+    // run callback function
+    _this.options.showAlert.call(_this.form, message, classes);
   };
   
   // hide error message for whole form
