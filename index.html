@@ -454,7 +454,11 @@
     <![endif]-->
     
     <script>
-      var form = new Validate($('form'));
+      var form = new Validate($('form'), {
+        onSuccess: function() {
+          alert('Success!');
+        }
+      });
     </script>
     
   </body>

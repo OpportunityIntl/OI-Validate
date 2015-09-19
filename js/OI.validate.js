@@ -1,5 +1,10 @@
-var Validate = function(form) {
+var Validate = function(form, options) {
   var _this = this;
+  
+  this.options = $.extend({
+    onError: function() {},
+    onSuccess: function() {}
+  }, options);
   
   /**** Public attributes ****/
   
@@ -267,7 +272,8 @@ var Validate = function(form) {
       if (_this.validate()) {
         // form passed validation
         
-        alert('Form validated');
+        if (typeof _this.options.onSuccess === 'function') _this.options.onSuccess.call(_this);
+        
       } else {
         // form failed validation
         
@@ -276,6 +282,8 @@ var Validate = function(form) {
         
         // set up field validation on blur
         _this.validateOnBlur(true);
+        
+        if (typeof _this.options.onError === 'function') _this.options.onError.call(_this);
         
       }
       
