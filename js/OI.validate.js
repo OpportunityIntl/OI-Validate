@@ -47,6 +47,7 @@ var Validate = function(form, options) {
           
           // display field error  
           if (item.fieldMessage) {
+            
             if (data.errorMessages.indexOf(item.fieldMessage) === -1) {
               data.errorMessages.push(item.fieldMessage);
               setData(field, data);
@@ -63,8 +64,15 @@ var Validate = function(form, options) {
         } else {
           // field passed this validation
           
-          // hide field error
-          _this.hideError(field, item.fieldMessage);
+          // remove error from field data
+          var errorIndex = data.errorMessages.indexOf(item.fieldMessage);
+          if (errorIndex !== -1) {
+            data.errorMessages.splice(data.errorMessages.indexOf(item.fieldMessage), 1);
+            setData(field, data);
+            
+            // hide field error
+            _this.hideError(field, item.fieldMessage);
+          }
           
           // set validity to true
           validity = true;
@@ -100,19 +108,14 @@ var Validate = function(form, options) {
   this.hideError = function(field, error) {
     var data = getData($(field));
     
-    var errorIndex = data.errorMessages.indexOf(error);
-    
     // get error message object (it's a sibling of the field)
-    var errorMessage = data.element.siblings('.error-message').eq(errorIndex);
+    var errorIndex = data.errorMessages.indexOf(error);
+    var errorMessage = data.element.siblings('.error-message:contains("' + error + '")');
     
     // remove error message
     errorMessage.slideUp(500, function() {
       errorMessage.remove();
     });
-    
-    data.errorMessages.splice(errorIndex, 1);
-    
-    setData($(field), data);
     
     // remove error class from field
     data.element.removeClass('error');
@@ -161,6 +164,9 @@ var Validate = function(form, options) {
       
       $.each(data.errorMessages, function(index, error) {
         _this.hideError(field, error);
+        data.errorMessages.splice(index, 1);
+        
+        setData(field, data);
       });
     });
   };
@@ -168,11 +174,11 @@ var Validate = function(form, options) {
   // enable/disable instant field validation
   this.validateOnBlur = function(boolean) {
     if (boolean) {
-      _this.fields.on('change.validate', function() {
+      _this.fields.on('blur.validate change.validate', function() {
         _this.validateField($(this));
       });
     } else {
-      _this.fields.off('change.validate');
+      _this.fields.off('blur.validate change.validate');
     }
   };
   
