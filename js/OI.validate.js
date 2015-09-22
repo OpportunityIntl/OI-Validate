@@ -41,19 +41,20 @@ var Validate = function(form, options) {
     
     // if field has data, run through its validations
     if (data) {
-      
-      // hide field error message
-      _this.hideError(field);
-      
       $.each(data.validations, function(index, item) {
         if (!item.validation.call(field)) {
           // field failed this validation
           
           // display field error
-          _this.displayError(field, item.fieldMessage);
+          if (data.errorMessages.indexOf(item.fieldMessage) === -1) {
+            data.errorMessages.push(item.fieldMessage);
+            setData(field, data);
+            
+            if (item.fieldMessage) _this.displayError(field, item.fieldMessage);
+          }
           
           // add message for alert
-          _this.errorMessages.push(item.formMessage);
+          if (item.formMessage) _this.errorMessages.push(item.formMessage);
           
           // set validity to false (we'll return this value at the end)
           validity = false;
@@ -61,7 +62,7 @@ var Validate = function(form, options) {
           // field passed this validation
           
           // hide field error
-          _this.hideError(field);
+          _this.hideError(field, data.errorMessages.indexOf(item.fieldMessage));
           
           // set validity to true
           validity = true;
@@ -94,20 +95,31 @@ var Validate = function(form, options) {
   };
   
   // hide error message on field
-  this.hideError = function(field) {
+  this.hideError = function(field, errorIndex) {
     var data = getData($(field));
     
+    console.log('Hiding error for ' + $(field).attr('id'));
+    
     // get error message object (it's a sibling of the field)
-    var errorMessage = data.element.siblings('.error-message');
+    var errorMessage = data.element.siblings('.error-message').eq(errorIndex);
     
     // remove error message
     errorMessage.slideUp(500, function() {
       errorMessage.remove();
     });
     
+    console.log('Error messages:');
+    console.log(data.errorMessages);
+    
+    data.errorMessages.splice(errorIndex, 1);
+    
+    console.log('After splicing: ');
+    console.log(data.errorMessages);
+    
+    setData($(field), data);
+    
     // remove error class from field
     data.element.removeClass('error');
-    
   };
   
   // display error message for whole form
@@ -149,7 +161,11 @@ var Validate = function(form, options) {
     
     // hide field errors
     _this.fields.each(function(index, field) {
-      _this.hideError(field);
+      var data = getData(field);
+      
+      $.each(data.errorMessages, function(index, error) {
+        _this.hideError(field, index);
+      });
     });
   };
   
@@ -188,7 +204,7 @@ var Validate = function(form, options) {
   // get plugin data for a field
   function getData(field) {
     // get data stored by jQuery in 'oi-validate'
-    var data = field.data('oi-validate');
+    var data = $(field).data('oi-validate');
     
     // if there's any data, return it
     // otherwise return false
@@ -202,13 +218,13 @@ var Validate = function(form, options) {
   // set plugin data for a field
   function setData(field, newData) {
     // get existing data for field, if any
-    var existingData = getData(field) || {};
+    var existingData = getData($(field)) || {};
     
     // extend existing data with new data
     data = $.extend(existingData, newData);
     
     // save data to field via jQuery
-    field.data('oi-validate', data);
+    $(field).data('oi-validate', data);
   }
   
   // setup validations for a field
@@ -217,7 +233,8 @@ var Validate = function(form, options) {
     // define default plugin data
     var data = {
       validations: [],
-      element: field
+      element: field,
+      errorMessages: []
     };
     
     // if field is marked as required, add required validation
@@ -253,8 +270,10 @@ var Validate = function(form, options) {
   }
   
   // add validation to a field
-  function addValidation(field) {
-    
+  function addValidation(field, validation) {
+    var data = getData(field) || {};
+    data.validations.push(validation);
+    setData(field, data);
   }
   
   // add fields to list of fields to be validated
@@ -300,9 +319,11 @@ var Validate = function(form, options) {
     // add 'novalidate' attribute to form to prevent native browser error handling
     _this.form.attr('novalidate', 'novalidate');
     
+    _this.hideErrors();
+    
     // add event handler to validate form on submit
     _this.form.submit(function() {
-      // hide form error message
+      
       _this.hideErrors();
       
       // remove field validation on blur (to prevent multiple handlers building up)
