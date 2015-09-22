@@ -1,3 +1,11 @@
+(function($) {
+  $.fn.validate = function(options) {
+    return this.each(function() {
+      new Validate($(this), options);
+    });
+  };
+}(jQuery));
+
 var Validate = function(form, options) {
   var _this = this;
   
@@ -254,7 +262,7 @@ var Validate = function(form, options) {
       data.validations.push({
         validation: function() {
           var re = /^[0-9a-zA-Z][-.+_a-zA-Z0-9]*@([0-9a-zA-Z][-._0-9a-zA-Z]*\.)+[a-zA-Z]{2,6}$/;
-		      return re.test($(this).val());
+          return re.test($(this).val());
         },
         fieldMessage: 'Invalid email address',
         formMessage: 'Please enter valid email address'

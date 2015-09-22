@@ -454,9 +454,10 @@
     <![endif]-->
     
     <script>
-      var form = new Validate($('form'), {
+      $('form').validate({
         onSuccess: function() {
           this.alert('Form validated!', 'success');
+          return false;
         }
       });
     </script>
