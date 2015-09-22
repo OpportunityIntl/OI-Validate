@@ -168,11 +168,11 @@ var Validate = function(form, options) {
   // enable/disable instant field validation
   this.validateOnBlur = function(boolean) {
     if (boolean) {
-      _this.fields.on('blur.validate change.validate', function() {
+      _this.fields.on('change.validate', function() {
         _this.validateField($(this));
       });
     } else {
-      _this.fields.off('blur.validate change.validate');
+      _this.fields.off('change.validate');
     }
   };
   
