@@ -22,17 +22,17 @@ var Validate = function(form, options) {
   this.validations = [
     {
       field: 'input[type!="radio"][required], select[required], textarea[required]',
-      validation: function() {
-        return $(this).val() !== '';
+      validation: function(field) {
+        return field.val() !== '';
       },
       fieldMessage: 'Required field',
       formMessage: 'Please fill out missing fields'
     },
     {
       field: 'input[type="email"]',
-      validation: function() {
+      validation: function(field) {
         var re = /^[0-9a-zA-Z][-.+_a-zA-Z0-9]*@([0-9a-zA-Z][-._0-9a-zA-Z]*\.)+[a-zA-Z]{2,6}$/;
-        return re.test($(this).val());
+        return re.test(field.val());
       },
       fieldMessage: 'Invalid email address',
       formMessage: 'Please enter valid email address'
@@ -59,7 +59,7 @@ var Validate = function(form, options) {
     
     // run custom form validations
     $.each(_this.options.formValidations, function(index, item) {
-      if (!item.validation.call(_this.form)) {
+      if (!item.validation.call(_this, _this.form)) {
         if (item.formMessage) _this.errorMessages.push(item.formMessage);
         errors++;
       }
@@ -80,7 +80,7 @@ var Validate = function(form, options) {
     // if field has data, run through its validations
     if (data) {
       $.each(data.validations, function(index, item) {
-        if (!item.validation.call(field)) {
+        if (!item.validation.call(_this.form, field)) {
           // field failed this validation
           
           // display field error  
@@ -358,7 +358,7 @@ var Validate = function(form, options) {
         
         // execute success callback
         if (typeof _this.options.onSuccess === 'function') {
-          if (_this.options.onSuccess.call(_this) === false) {
+          if (_this.options.onSuccess.call(_this, _this.form) === false) {
             return false;
           }
         }
@@ -373,7 +373,7 @@ var Validate = function(form, options) {
         _this.validateOnBlur(true);
         
         // execute error callback
-        if (typeof _this.options.onError === 'function') _this.options.onError.call(_this);
+        if (typeof _this.options.onError === 'function') _this.options.onError.call(_this, _this.form);
         
         // return false to prevent form from submitting so we can run validations
         return false;
@@ -383,7 +383,7 @@ var Validate = function(form, options) {
     
     setupValidations();
     
-    _this.options.onInit.call(_this);
+    _this.options.onInit.call(_this, _this.form);
   }
   
   setupForm();

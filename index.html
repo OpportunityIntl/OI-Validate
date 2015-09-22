@@ -455,14 +455,14 @@
     
     <script>
       $('form').validate({
-        onSuccess: function() {
+        onSuccess: function(form) {
           this.alert('Form validated!', 'success');
           return false;
         },
         formValidations: [
           {
-            validation: function() {
-              return $(this).find('[name="phone_type"]:checked').length > 0;
+            validation: function(form) {
+              return form.find('[name="phone_type"]:checked').length > 0;
             },
             formMessage: 'Please select a phone type'
           }
@@ -470,8 +470,9 @@
         fieldValidations: [
           {
             field: '#phone',
-            validation: function() {
-              return $(this).val().length >= 10 && $(this).val().length <= 11;
+            validation: function(field) {
+              var digits = field.val().replace(/[^0-9]/g,'');
+              return digits.length >= 10 && digits.length <= 11;
             },
             fieldMessage: 'Must contain 10 or 11 digits',
             formMessage: 'Please enter a valid phone number'
