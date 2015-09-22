@@ -335,7 +335,11 @@ var Validate = function(form, options) {
         // form passed validation
         
         // execute success callback
-        if (typeof _this.options.onSuccess === 'function') _this.options.onSuccess.call(_this);
+        if (typeof _this.options.onSuccess === 'function') {
+          if (_this.options.onSuccess.call(_this) === false) {
+            return false;
+          }
+        }
         
       } else {
         // form failed validation
@@ -349,10 +353,10 @@ var Validate = function(form, options) {
         // execute error callback
         if (typeof _this.options.onError === 'function') _this.options.onError.call(_this);
         
+        // return false to prevent form from submitting so we can run validations
+        return false;
+        
       }
-      
-      // return false to prevent form from submitting so we can run validations
-      return false;
     });
     
     addFields();
