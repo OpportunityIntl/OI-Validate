@@ -458,7 +458,15 @@
         onSuccess: function() {
           this.alert('Form validated!', 'success');
           return false;
-        }
+        },
+        formValidations: [
+          {
+            validation: function() {
+              return $(this).find('[name="phone_type"]:checked').length > 0;
+            },
+            formMessage: 'Please select a phone type'
+          }
+        ]
       });
     </script>
     

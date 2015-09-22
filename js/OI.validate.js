@@ -13,6 +13,7 @@ var Validate = function(form, options) {
     onInit: function() {},
     onError: function() {},
     onSuccess: function() {},
+    formValidations: [],
     showAlert: showAlert,
     hideAlert: hideAlert
   }, options);
@@ -33,6 +34,14 @@ var Validate = function(form, options) {
     // validate each field and increase error counter if validation fails
     _this.fields.each(function() {
       if (!_this.validateField($(this))) errors++;
+    });
+    
+    // run custom form validations
+    $.each(_this.options.formValidations, function(index, item) {
+      if (!item.validation.call(_this.form)) {
+        if (item.formMessage) _this.errorMessages.push(item.formMessage);
+        errors++;
+      }
     });
     
     // return true or false
