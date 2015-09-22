@@ -19,6 +19,26 @@ var Validate = function(form, options) {
     hideAlert: hideAlert
   }, options);
   
+  this.validations = [
+    {
+      field: 'input[type!="radio"][required], select[required], textarea[required]',
+      validation: function() {
+        return $(this).val() !== '';
+      },
+      fieldMessage: 'Required field',
+      formMessage: 'Please fill out missing fields'
+    },
+    {
+      field: 'input[type="email"]',
+      validation: function() {
+        var re = /^[0-9a-zA-Z][-.+_a-zA-Z0-9]*@([0-9a-zA-Z][-._0-9a-zA-Z]*\.)+[a-zA-Z]{2,6}$/;
+        return re.test($(this).val());
+      },
+      fieldMessage: 'Invalid email address',
+      formMessage: 'Please enter valid email address'
+    }
+  ];
+  
   /**** Public attributes ****/
   
   this.form = $(form);
@@ -181,10 +201,10 @@ var Validate = function(form, options) {
       var data = getData(field);
       
       $.each(data.errorMessages, function(index, error) {
-        _this.hideError(field, error);
+        _this.hideError($(field), error);
         data.errorMessages.splice(index, 1);
         
-        setData(field, data);
+        setData($(field), data);
       });
     });
   };
@@ -202,9 +222,6 @@ var Validate = function(form, options) {
   
   // add a single field to the list of fields to be validated
   this.addField = function(field) {
-    // set up validations on field
-    setupValidations(field);
-    
     // add field
     _this.fields = _this.fields.add(field);
   };
@@ -247,46 +264,41 @@ var Validate = function(form, options) {
     $(field).data('oi-validate', data);
   }
   
-  // setup validations for a field
-  function setupValidations(field) {
-    
-    // define default plugin data
-    var data = {
+  function setupValidation(field, validation) {
+    var data = getData(field) || {
       validations: [],
-      element: field,
+      element: $(field),
       errorMessages: []
     };
     
-    // if field is marked as required, add required validation
-    if (field.is('[required]')) {
-      data.validations.push({
-        validation: function() {
-          return $(this).val() !== '';
-        },
-        fieldMessage: 'Required field',
-        formMessage: 'Please fill out missing fields'
-      });
-    }
-    
-    if (field.is('[type="email"]')) {
-      data.validations.push({
-        validation: function() {
-          var re = /^[0-9a-zA-Z][-.+_a-zA-Z0-9]*@([0-9a-zA-Z][-._0-9a-zA-Z]*\.)+[a-zA-Z]{2,6}$/;
-          return re.test($(this).val());
-        },
-        fieldMessage: 'Invalid email address',
-        formMessage: 'Please enter valid email address'
-      });
-    }
+    data.validations.push(validation);
     
     // if field is a select input, set "element" to its parent div
     // (this is specific to how select inputs are styled in Weavr)
-    if (field.is('select')) {
-      data.element = field.parents('.select');
+    if ($(field).is('select')) {
+      data.element = $(field).parents('.select');
     }
     
     // set this data for the field
     setData($(field), data);
+  }
+  
+  // setup validations for a field
+  function setupValidations() {
+    // extend default validations with custom field validations
+    $.each(_this.options.fieldValidations, function(index, validation) {
+      _this.validations.push(validation);
+    });
+    
+    // set up fields and validation data for each validation
+    $.each(_this.validations, function(index, validation) {
+      $(_this.form.find(validation.field)).each(function(index, field) {
+        if ($(this).length > 0) {
+          _this.addField($(this));
+          setupValidation($(field), validation);
+        }
+      });
+    });
   }
   
   // add validation to a field
@@ -294,19 +306,6 @@ var Validate = function(form, options) {
     var data = getData(field) || {};
     data.validations.push(validation);
     setData(field, data);
-  }
-  
-  // add fields to list of fields to be validated
-  function addFields() {
-    // add every input (excluding radio buttons), select, and textarea
-    _this.form.find('input[type!="radio"][required], select[required], textarea[required]').each(function() {
-      _this.addField($(this));
-    });
-    
-    $.each(_this.options.fieldValidations, function(index, item) {
-      console.log(_this.form.find(item.field));
-      addValidation(_this.form.find(item.field), item);
-    });
   }
   
   // default callback to show alert
@@ -382,7 +381,7 @@ var Validate = function(form, options) {
       }
     });
     
-    addFields();
+    setupValidations();
     
     _this.options.onInit.call(_this);
   }
