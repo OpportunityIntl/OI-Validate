@@ -14,6 +14,7 @@ var Validate = function(form, options) {
     onError: function() {},
     onSuccess: function() {},
     formValidations: [],
+    fieldValidations: [],
     showAlert: showAlert,
     hideAlert: hideAlert
   }, options);
@@ -300,6 +301,11 @@ var Validate = function(form, options) {
     // add every input (excluding radio buttons), select, and textarea
     _this.form.find('input[type!="radio"][required], select[required], textarea[required]').each(function() {
       _this.addField($(this));
+    });
+    
+    $.each(_this.options.fieldValidations, function(index, item) {
+      console.log(_this.form.find(item.field));
+      addValidation(_this.form.find(item.field), item);
     });
   }
   

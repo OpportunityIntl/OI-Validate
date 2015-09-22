@@ -466,6 +466,16 @@
             },
             formMessage: 'Please select a phone type'
           }
+        ],
+        fieldValidations: [
+          {
+            field: '#phone',
+            validation: function() {
+              return $(this).val().length >= 10 && $(this).val().length <= 11;
+            },
+            fieldMessage: 'Must contain 10 or 11 digits',
+            formMessage: 'Please enter a valid phone number'
+          }
         ]
       });
     </script>
