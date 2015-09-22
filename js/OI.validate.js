@@ -62,7 +62,7 @@ var Validate = function(form, options) {
           // field passed this validation
           
           // hide field error
-          _this.hideError(field, data.errorMessages.indexOf(item.fieldMessage));
+          _this.hideError(field, item.fieldMessage);
           
           // set validity to true
           validity = true;
@@ -95,10 +95,10 @@ var Validate = function(form, options) {
   };
   
   // hide error message on field
-  this.hideError = function(field, errorIndex) {
+  this.hideError = function(field, error) {
     var data = getData($(field));
     
-    console.log('Hiding error for ' + $(field).attr('id'));
+    var errorIndex = data.errorMessages.indexOf(error);
     
     // get error message object (it's a sibling of the field)
     var errorMessage = data.element.siblings('.error-message').eq(errorIndex);
@@ -108,13 +108,7 @@ var Validate = function(form, options) {
       errorMessage.remove();
     });
     
-    console.log('Error messages:');
-    console.log(data.errorMessages);
-    
     data.errorMessages.splice(errorIndex, 1);
-    
-    console.log('After splicing: ');
-    console.log(data.errorMessages);
     
     setData($(field), data);
     
@@ -164,7 +158,7 @@ var Validate = function(form, options) {
       var data = getData(field);
       
       $.each(data.errorMessages, function(index, error) {
-        _this.hideError(field, index);
+        _this.hideError(field, error);
       });
     });
   };
