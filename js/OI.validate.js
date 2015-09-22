@@ -45,12 +45,14 @@ var Validate = function(form, options) {
         if (!item.validation.call(field)) {
           // field failed this validation
           
-          // display field error
-          if (data.errorMessages.indexOf(item.fieldMessage) === -1) {
-            data.errorMessages.push(item.fieldMessage);
-            setData(field, data);
-            
-            if (item.fieldMessage) _this.displayError(field, item.fieldMessage);
+          // display field error  
+          if (item.fieldMessage) {
+            if (data.errorMessages.indexOf(item.fieldMessage) === -1) {
+              data.errorMessages.push(item.fieldMessage);
+              setData(field, data);
+              
+              _this.displayError(field, item.fieldMessage);
+            }
           }
           
           // add message for alert
