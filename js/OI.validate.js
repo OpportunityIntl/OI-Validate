@@ -1,18 +1,21 @@
 (function($) {
   $.fn.validate = function(options) {
     return this.each(function() {
-      new Validate($(this), options);
+      new Validator($(this), options);
     });
   };
 }(jQuery));
 
-var Validate = function(form, options) {
+var Validator = function(form, options) {
   var _this = this;
   
   this.options = $.extend({
     onInit: function() {},
+    onSubmit: function() {},
     onError: function() {},
     onSuccess: function() {},
+    showProcessing: showProcessing,
+    hideProcessing: hideProcessing,
     formValidations: [],
     fieldValidations: [],
     showAlert: showAlert,
@@ -226,6 +229,14 @@ var Validate = function(form, options) {
     _this.fields = _this.fields.add(field);
   };
   
+  this.processing = function(boolean) {
+    if (boolean) {
+      _this.options.showProcessing.call(_this, _this.form);
+    } else {
+      _this.options.hideProcessing.call(_this, _this.form);
+    }
+  };
+  
   /**** Private methods ****/
   
   // special validation for radio buttons
@@ -338,6 +349,22 @@ var Validate = function(form, options) {
     });
   }
   
+  // default callback to show processing indicator
+  function showProcessing(form) {
+    var submitButton = form.find('input[type="submit"]');
+    var processingButton = $('<button>', {type: 'button', id: 'processing-btn', class: submitButton.attr('class'), disabled: true});
+    processingButton.html('Processing...');
+    submitButton.hide();
+    submitButton.after(processingButton);
+  }
+  
+  // default callback to hide processing indicator
+  function hideProcessing(form) {
+    var submitButton = form.find('input[type="submit"]');
+    submitButton.show();
+    $('#processing-btn').hide();
+  }
+  
   // set up submit handler and other misc things on form
   function setupForm() {
     // add 'novalidate' attribute to form to prevent native browser error handling
@@ -347,6 +374,10 @@ var Validate = function(form, options) {
     
     // add event handler to validate form on submit
     _this.form.submit(function() {
+      // execute onSubmit callback and stop execution if callback returns false
+      if (_this.options.onSubmit.call(_this, _this.form) === false) {
+        return false;
+      }
       
       _this.hideErrors();
       

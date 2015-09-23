@@ -456,8 +456,18 @@
     <script>
       $('form').validate({
         onSuccess: function(form) {
+          var _this = this;
           this.alert('Form validated!', 'success');
+          setTimeout(function() {
+            _this.processing(false);
+          }, 500);
           return false;
+        },
+        onError: function(form) {
+          this.processing(false);
+        },
+        onSubmit: function(form) {
+          this.processing(true);
         },
         formValidations: [
           {
