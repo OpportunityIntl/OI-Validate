@@ -109,3 +109,28 @@ Or, for something more complicated, let's say the zip code can only contain 4 di
   fieldMessage: 'Can only contain 4 digits'
 }
 ```
+
+## Public methods
+
+Method | Description
+-------|------------
+`validate()` | Validates entire form. Automatically called on form submit event.
+`validateField(field)` | Validate a single field.
+`displayError(field, message)` | Display error message for a single field.
+`hideError(field, message)` | Hide error message for a single field.
+`displayErrors()` | Display error messages for whole form (including field errors).
+`hideErrors()` | Hide error messages for whole form.
+`alert(message, classes)` | Display alert message (used to display form errors). A string of classes can be specified that will be added to the alert. Within Weavr framework, this allows you to display it as an error, warning, notice, or success alert.
+`hideAlert()` | Hide the alert.
+`validateOnBlur(boolean)` | Set whether or not fields are validated on blur (or change) event.
+`processing(boolean)` | Display or hide processing indicator.
+
+## Public properties
+
+Property | Description
+---------|------------
+form | The form element, as a jQuery object.
+fields | A jQuery collection of all the fields that are designated to be validated.
+errorMessages | Array of form error messages.
+validations | Array of validation objects.
+options | Object containing the options specified for this instance of the Validator.
