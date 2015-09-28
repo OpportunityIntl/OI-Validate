@@ -39,6 +39,15 @@ var Validator = function(form, options) {
       },
       fieldMessage: 'Invalid email address',
       formMessage: 'Please enter valid email address'
+    },
+    {
+      field: 'input[type="radio"][required]',
+      validation: function(field) {
+        var name = field.attr('name');
+        return this.find('input[type="radio"][name="' + name + '"]:checked').length > 0;
+      },
+      fieldMessage: 'Select an option',
+      formMessage: 'Please fill out missing fields'
     }
   ];
   
@@ -290,6 +299,12 @@ var Validator = function(form, options) {
       data.element = $(field).parents('.select');
     }
     
+    // if field is a radio input, we want to display the error message after
+    // the last label in the radio group
+    if ($(field).is('input[type="radio"]')) {
+      data.element = $(field).siblings('[name="' + $(field).attr('name') + '"]').last().siblings('label');
+    }
+    
     // set this data for the field
     setData($(field), data);
   }
@@ -304,10 +319,22 @@ var Validator = function(form, options) {
     // set up fields and validation data for each validation
     $.each(_this.validations, function(index, validation) {
       $(_this.form.find(validation.field)).each(function(index, field) {
-        if ($(this).length > 0) {
-          _this.addField($(this));
-          setupValidation($(field), validation);
+        
+        // if field is a radio input... 
+        if ($(field).is('input[type="radio"]')) {
+          // check to see if another radio input in the same group has already
+          // been added to the list of fields to avoid duplicate error messages
+          if (_this.fields.filter('input[type="radio"][name="' + $(field).attr('name') + '"]').length > 0) {
+            return;
+          } else {
+            // if it's the first radio input of a group, set the field object to
+            // reference the radio group instead of the individual radio input
+            field = _this.form.find('input[type="radio"][name="' + $(field).attr('name') + '"]');
+          }
         }
+        
+        _this.addField($(field));
+        setupValidation($(field), validation);
       });
     });
   }
