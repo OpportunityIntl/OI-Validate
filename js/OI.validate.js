@@ -1,7 +1,9 @@
 (function($) {
   $.fn.validate = function(options) {
     return this.each(function() {
-      new Validator($(this), options);
+      if (!$(this).data('oi-validate')) {
+        $(this).data('oi-validate', new Validator($(this), options));
+      }
     });
   };
 }(jQuery));
