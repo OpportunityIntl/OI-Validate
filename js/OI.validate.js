@@ -152,6 +152,8 @@ var Validator = function(form, options) {
     
     // add error class to field
     data.element.addClass('error');
+    
+    return _this;
   };
   
   // hide error message on field
@@ -169,6 +171,8 @@ var Validator = function(form, options) {
     
     // remove error class from field
     data.element.removeClass('error');
+    
+    return _this;
   };
   
   // display error message for whole form
@@ -189,16 +193,22 @@ var Validator = function(form, options) {
     
     // show alert
     _this.alert(message);
+    
+    return _this;
   };
   
   // show alert
   this.alert = function(message, classes) {    
     // run callback function
     _this.options.showAlert.call(_this.form, message, classes);
+    
+    return _this;
   };
   
   this.hideAlert = function() {
     _this.options.hideAlert.call(_this.form);
+    
+    return _this;
   };
   
   // hide error message for whole form
@@ -219,6 +229,8 @@ var Validator = function(form, options) {
         setData($(field), data);
       });
     });
+    
+    return _this;
   };
   
   // enable/disable instant field validation
@@ -230,12 +242,16 @@ var Validator = function(form, options) {
     } else {
       _this.fields.off('blur.validate change.validate');
     }
+    
+    return _this;
   };
   
   // add a single field to the list of fields to be validated
   this.addField = function(field) {
     // add field
     _this.fields = _this.fields.add(field);
+    
+    return _this;
   };
   
   this.processing = function(boolean) {
@@ -244,6 +260,8 @@ var Validator = function(form, options) {
     } else {
       _this.options.hideProcessing.call(_this, _this.form);
     }
+    
+    return _this;
   };
   
   /**** Private methods ****/
