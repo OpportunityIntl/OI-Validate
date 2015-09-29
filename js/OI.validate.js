@@ -147,16 +147,13 @@ var Validator = function(form, options) {
     var data = getData(field);
     
     // create new element for error message
-    var errorMessage = $('<div>', {class: 'error-message', style: 'display: none'});
+    var errorMessage = $('<div>', {class: 'error-message'});
     
     // set content for error message
     errorMessage.html(message);
     
     // insert error message after field
     data.element.after(errorMessage);
-    
-    // show error message
-    errorMessage.slideDown(500);
     
     // add error class to field
     data.element.addClass('error');
@@ -173,9 +170,8 @@ var Validator = function(form, options) {
     var errorMessage = data.element.siblings('.error-message:contains("' + error + '")');
     
     // remove error message
-    errorMessage.slideUp(500, function() {
-      errorMessage.remove();
-    });
+    errorMessage.remove();
+    
     
     // remove error class from field
     data.element.removeClass('error');
@@ -387,15 +383,13 @@ var Validator = function(form, options) {
     }
     
     // create alert element
-    alert = $('<div>', {class: 'alert ' + (classes ? classes : 'error'), style: "display: none"});
+    alert = $('<div>', {class: 'alert ' + (classes ? classes : 'error')});
     
     // prepend alert to form
     $(this).prepend(alert);
     
     // set alert content
     alert.html(message);
-    
-    alert.slideDown(500);
   }
   
   // default callback to hide alert
