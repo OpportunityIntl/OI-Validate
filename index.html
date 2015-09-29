@@ -135,7 +135,7 @@
           <div class="row">
             <div class="col col-4 t-col-3 m-col-6">
               <label for="city">City</label>
-              <input type="text" id="city" name="city" value="" required>
+              <input type="text" id="city" name="city" value="" placeholder="e.g. Chicago" required>
             </div>
             <div class="col col-2 t-col-3 m-col-6">
               <label for="state">State</label>
@@ -197,7 +197,7 @@
             </div>
             <div class="col col-3 t-col-3 m-col-6">
               <label for="zip">Zip Code</label>
-              <input type="text" id="zip" name="zip" value="" required>
+              <input type="text" id="zip" name="zip" value="" placeholder="e.g. 60607" required>
             </div>
             <div class="col col-3 t-col-3 m-col-6">
               <label for="country">Country</label>
@@ -205,6 +205,12 @@
                 <select id="country" name="country" required>
                   <option value="">Choose one</option>
                   <option value="Australia">Australia</option>
+                  <option value="Canada">Canada</option>
+                  <option value="Germany">Germany</option>
+                  <option value="Hong Kong">Hong Kong</option>
+                  <option value="United Kingdom">United Kingdom</option>
+                  <option value="United States">United States</option>
+                  <option disabled>──────────</option>
                   <option value="Afghanistan">Afghanistan</option>
                   <option value="Aland Islands">Aland Islands</option>
                   <option value="Albania">Albania</option>
@@ -240,7 +246,6 @@
                   <option value="Burundi">Burundi</option>
                   <option value="Cambodia">Cambodia</option>
                   <option value="Cameroon">Cameroon</option>
-                  <option value="Canada">Canada</option>
                   <option value="Cape Verde">Cape Verde</option>
                   <option value="Cayman Islands">Cayman Islands</option>
                   <option value="Central African Republic">Central African Republic</option>
@@ -278,7 +283,6 @@
                   <option value="Gabon">Gabon</option>
                   <option value="Gambia">Gambia</option>
                   <option value="Georgia">Georgia</option>
-                  <option value="Germany">Germany</option>
                   <option value="Ghana">Ghana</option>
                   <option value="Gibraltar">Gibraltar</option>
                   <option value="Greece">Greece</option>
@@ -293,7 +297,6 @@
                   <option value="Heard Island And Mcdonald Islands">Heard Island And Mcdonald Islands</option>
                   <option value="Holly See (Vatican City State)">Holly See (Vatican City State)</option>
                   <option value="Honduras">Honduras</option>
-                  <option value="Hong Kong">Hong Kong</option>
                   <option value="Hungary">Hungary</option>
                   <option value="Iceland">Iceland</option>
                   <option value="India">India</option>
@@ -425,8 +428,6 @@
                   <option value="Uganda">Uganda</option>
                   <option value="Ukraine">Ukraine</option>
                   <option value="United Arab Emirates">United Arab Emirates</option>
-                  <option value="United Kingdom">United Kingdom</option>
-                  <option value="United States">United States</option>
                   <option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
                   <option value="Uruguay">Uruguay</option>
                   <option value="Uzbekistan">Uzbekistan</option>
@@ -448,7 +449,7 @@
           <div class="row">
             <div class="col col-6 t-col-6 m-col-12">
               <label for="phone">Phone Number</label>
-              <input type="text" id="phone" name="phone" value="" required>
+              <input type="text" id="phone" name="phone" value="" placeholder="e.g. 123-456-7890" required>
               <fieldset class="align-center radio-group">
                 <input type="radio" id="phone_type_home" name="phone_type" value="Home" required>
                 <label for="phone_type_home" class="radio small inline">Home</label>
@@ -462,7 +463,13 @@
             </div>
             <div class="col col-6 t-col-6 m-col-12">
               <label for="email">Email address</label>
-              <input type="email" id="email" name="email" value="" required>
+              <input type="email" id="email" name="email" value="" placeholder="e.g. name@domain.com" required>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col col-12 t-col-12 m-col-12">
+              <input type="checkbox" id="accept_terms" name="accept_terms" value="1" required>
+              <label for="accept_terms" class="checkbox">I accept the <a>terms and conditions</a> and authorize this transaction.</label>
             </div>
           </div>
           <div class="row">

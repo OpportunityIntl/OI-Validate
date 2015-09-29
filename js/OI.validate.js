@@ -24,7 +24,7 @@ var Validator = function(form, options) {
   
   this.validations = [
     {
-      field: 'input[type!="radio"][required], select[required], textarea[required]',
+      field: 'input[type!="radio"][type!="checkbox"][required], select[required], textarea[required]',
       validation: function(field) {
         return field.val() !== '';
       },
@@ -47,6 +47,14 @@ var Validator = function(form, options) {
         return this.find('input[type="radio"][name="' + name + '"]:checked').length > 0;
       },
       fieldMessage: 'Select an option',
+      formMessage: 'Please fill out missing fields'
+    },
+    {
+      field: 'input[type="checkbox"][required]',
+      validation: function(field) {
+        return field.is(':checked');
+      },
+      fieldMessage: 'Required field',
       formMessage: 'Please fill out missing fields'
     }
   ];
@@ -321,6 +329,10 @@ var Validator = function(form, options) {
     // the last label in the radio group
     if ($(field).is('input[type="radio"]')) {
       data.element = $(field).siblings('[name="' + $(field).attr('name') + '"]').last().siblings('label');
+    }
+    
+    if ($(field).is('input[type="checkbox"]')) {
+      data.element = $(field).siblings('label[for="' + $(field).attr('id') + '"]');
     }
     
     // set this data for the field
