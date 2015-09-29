@@ -147,13 +147,15 @@ var Validator = function(form, options) {
     var data = getData(field);
     
     // create new element for error message
-    var errorMessage = $('<div>', {class: 'error-message'});
+    var errorMessage = $('<div>', {class: 'error-message', style: 'display: none;'});
     
     // set content for error message
     errorMessage.html(message);
     
     // insert error message after field
     data.element.after(errorMessage);
+    
+    errorMessage.show();
     
     // add error class to field
     data.element.addClass('error');
@@ -324,7 +326,7 @@ var Validator = function(form, options) {
     // if field is a radio input, we want to display the error message after
     // the last label in the radio group
     if ($(field).is('input[type="radio"]')) {
-      data.element = $(field).siblings('[name="' + $(field).attr('name') + '"]').last().siblings('label');
+      data.element = $(field).siblings('[name="' + $(field).attr('name') + '"]').next('label');
     }
     
     if ($(field).is('input[type="checkbox"]')) {
