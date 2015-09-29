@@ -1,6 +1,6 @@
 # OI-Validate
 
-A lightweight client-side form validation library. Dependent on jQuery (for Javascript sugar) and Weavr (for error message styling).
+A lightweight client-side form validation library. Dependent on jQuery (for Javascript sugar) and Weavr (for error message styling). [View a demo here](http://opportunityintl.github.io/OI-Validate).
 
 ## Usage
 
