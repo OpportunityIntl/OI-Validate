@@ -396,6 +396,8 @@ var Validator = function(form, options) {
     alert.html(message);
     
     alert.slideDown(500);
+    
+    scrollTo(_this.form, 500, {offset: -40});
   }
   
   // default callback to hide alert
@@ -420,6 +422,16 @@ var Validator = function(form, options) {
     var submitButton = form.find('input[type="submit"]');
     submitButton.show();
     $('#processing-btn').hide();
+  }
+  
+  function scrollTo(element, timer, options) {
+    options = options || {};
+
+    var elementTop = Math.ceil(element.offset().top + (options.offset || 0));
+
+    $('body,html').stop(true, true).animate({
+      scrollTop: elementTop
+    }, timer);
   }
   
   // set up submit handler and other misc things on form
