@@ -9,7 +9,7 @@ You can initialize the library as a jQuery plugin or with plain Javascript:
 // jQuery
 $([form selector]).validate(options);
 
-// Javascript
+// plain Javascript
 var form = new Validator($([form selector]), options);
 ```
 
@@ -114,8 +114,8 @@ Or, for something more complicated, let's say the zip code can only contain 4 di
 
 Method | Description
 -------|------------
-`validate()` | Validates entire form. Automatically called on form submit event.
-`validateField(field)` | Validate a single field.
+`validate()` | Validates entire form. Automatically called on form submit event. Returns `true` or `false`
+`validateField(field)` | Validate a single field. Returns `true` or `false`.
 `displayError(field, message)` | Display error message for a single field.
 `hideError(field, message)` | Hide error message for a single field.
 `displayErrors()` | Display error messages for whole form (including field errors).
