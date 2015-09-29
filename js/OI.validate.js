@@ -1,7 +1,9 @@
 (function($) {
   $.fn.validate = function(options) {
     return this.each(function() {
-      new Validator($(this), options);
+      if (!$(this).data('oi-validate')) {
+        $(this).data('oi-validate', new Validator($(this), options));
+      }
     });
   };
 }(jQuery));
@@ -147,7 +149,7 @@ var Validator = function(form, options) {
     var data = getData(field);
     
     // create new element for error message
-    var errorMessage = $('<div>', {class: 'error-message', style: 'display: none'});
+    var errorMessage = $('<div>', {class: 'error-message', style: 'display: none;'});
     
     // set content for error message
     errorMessage.html(message);
@@ -155,8 +157,7 @@ var Validator = function(form, options) {
     // insert error message after field
     data.element.after(errorMessage);
     
-    // show error message
-    errorMessage.slideDown(500);
+    errorMessage.show();
     
     // add error class to field
     data.element.addClass('error');
@@ -173,9 +174,8 @@ var Validator = function(form, options) {
     var errorMessage = data.element.siblings('.error-message:contains("' + error + '")');
     
     // remove error message
-    errorMessage.slideUp(500, function() {
-      errorMessage.remove();
-    });
+    errorMessage.remove();
+    
     
     // remove error class from field
     data.element.removeClass('error');
@@ -328,7 +328,7 @@ var Validator = function(form, options) {
     // if field is a radio input, we want to display the error message after
     // the last label in the radio group
     if ($(field).is('input[type="radio"]')) {
-      data.element = $(field).siblings('[name="' + $(field).attr('name') + '"]').last().siblings('label');
+      data.element = $(field).siblings('[name="' + $(field).attr('name') + '"]').next('label');
     }
     
     if ($(field).is('input[type="checkbox"]')) {
@@ -387,7 +387,7 @@ var Validator = function(form, options) {
     }
     
     // create alert element
-    alert = $('<div>', {class: 'alert ' + (classes ? classes : 'error'), style: "display: none"});
+    alert = $('<div>', {class: 'alert ' + (classes ? classes : 'error'), style: 'display: none;'});
     
     // prepend alert to form
     $(this).prepend(alert);
@@ -396,6 +396,8 @@ var Validator = function(form, options) {
     alert.html(message);
     
     alert.slideDown(500);
+    
+    scrollTo(_this.form, 500, {offset: -40});
   }
   
   // default callback to hide alert
@@ -420,6 +422,16 @@ var Validator = function(form, options) {
     var submitButton = form.find('input[type="submit"]');
     submitButton.show();
     $('#processing-btn').hide();
+  }
+  
+  function scrollTo(element, timer, options) {
+    options = options || {};
+
+    var elementTop = Math.ceil(element.offset().top + (options.offset || 0));
+
+    $('body,html').stop(true, true).animate({
+      scrollTop: elementTop
+    }, timer);
   }
   
   // set up submit handler and other misc things on form
