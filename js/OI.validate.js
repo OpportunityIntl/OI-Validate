@@ -387,13 +387,15 @@ var Validator = function(form, options) {
     }
     
     // create alert element
-    alert = $('<div>', {class: 'alert ' + (classes ? classes : 'error')});
+    alert = $('<div>', {class: 'alert ' + (classes ? classes : 'error'), style: 'display: none;'});
     
     // prepend alert to form
     $(this).prepend(alert);
     
     // set alert content
     alert.html(message);
+    
+    alert.slideDown(500);
   }
   
   // default callback to hide alert
