@@ -410,7 +410,7 @@ var Validator = function(form, options) {
   
   // default callback to show processing indicator
   function showProcessing(form) {
-    var submitButton = form.find('input[type="submit"]');
+    var submitButton = form.find('input[type="submit"], button[type="submit"]');
     var processingButton = $('<button>', {type: 'button', class: submitButton.attr('class') + ' processing-btn', disabled: true});
     processingButton.html('Processing...');
     submitButton.hide();
@@ -419,7 +419,7 @@ var Validator = function(form, options) {
   
   // default callback to hide processing indicator
   function hideProcessing(form) {
-    var submitButton = form.find('input[type="submit"]');
+    var submitButton = form.find('input[type="submit"], button[type="submit"]');
     submitButton.show();
     form.find('.processing-btn').hide();
   }
