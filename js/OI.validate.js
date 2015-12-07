@@ -185,6 +185,9 @@ var Validator = function(form, options) {
   
   // display error message for whole form
   this.displayErrors = function() {
+    // don't do anything if there aren't any error messages to display
+    if (_this.errorMessages.length === 0) return _this;
+    
     // filter error messages to remove duplicates
     var uniqueMessages = _this.errorMessages.reduce(function(previousValue, currentValue){
       if (previousValue.indexOf(currentValue) < 0 ) previousValue.push(currentValue);
