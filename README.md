@@ -47,7 +47,7 @@ showProcessing | function(form) | Override the default function used to display 
 hideProcessing | function(form) | Override the default function used to hide the form processing indicator.
 showAlert | function(message, classes) | Override the default function used to display the form alert message(s). The value of `this` is the form jQuery object.
 hideAlert | function() | Override the default function used to hide the form alert message(s). The value of `this` is the form jQuery object.
-formMessage | function(messages) | Override the default function used to generate the error message string for the form alert. Receives an array of the individual message strings. Must return a string.
+alertMessage | function(messages) | Override the default function used to generate the error message string for the form alert. Receives an array of the individual message strings. Must return a string.
 
 ## Custom validations
 
@@ -96,7 +96,7 @@ Let's say we want to validate the phone number to make sure it contains either 1
 }
 ```
 
-Or, for something more complicated, let's say the zip code can only contain 4 digits if the users has selected Australia as their country, but for any other country we don't care how many digits it contains:
+Or, for something more complicated, let's say the zip code can only contain 4 digits if the user has selected Australia as their country, but for any other country we don't care how many digits it contains:
 
 ```javascript
 {
