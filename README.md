@@ -43,6 +43,11 @@ onSuccess | function(form) | Callback function called on submit if form passes v
 onError | function(form) | Callback function called on submit if form fails validations. Value of `this` is the Validator object, and the form element (as a jQuery object) is passed as the only parameter.
 formValidations | array | Array of custom form validation objects (more on that later)
 fieldValidations | array | Array of custom field validation objects (more on that later)
+showProcessing | function(form) | Override the default function used to display the form processing indicator.
+hideProcessing | function(form) | Override the default function used to hide the form processing indicator.
+showAlert | function(message, classes) | Override the default function used to display the form alert message(s). The value of `this` is the form jQuery object.
+hideAlert | function() | Override the default function used to hide the form alert message(s). The value of `this` is the form jQuery object.
+formMessage | function(messages) | Override the default function used to generate the error message string for the form alert. Receives an array of the individual message strings. Must return a string.
 
 ## Custom validations
 
