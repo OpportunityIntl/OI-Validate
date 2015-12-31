@@ -21,7 +21,8 @@ var Validator = function(form, options) {
     formValidations: [],
     fieldValidations: [],
     showAlert: showAlert,
-    hideAlert: hideAlert
+    hideAlert: hideAlert,
+    alertMessage: alertMessage
   }, options);
   
   this.validations = [
@@ -185,8 +186,9 @@ var Validator = function(form, options) {
   
   // display error message for whole form
   this.displayErrors = function() {
-    // don't do anything if there aren't any error messages to display
-    if (_this.errorMessages.length === 0) return _this;
+    // don't do anything if there aren't any error messages to display or if
+    // the alertMessage option is not a function
+    if (_this.errorMessages.length === 0 || typeof _this.options.alertMessage !== 'function') return _this;
     
     // filter error messages to remove duplicates
     var uniqueMessages = _this.errorMessages.reduce(function(previousValue, currentValue){
@@ -194,13 +196,8 @@ var Validator = function(form, options) {
       return previousValue;
     },[]);
     
-    // generate alert message string
-    var message = "<p><strong>Looks like there are some problems with the highlighted fields. Please address the following errors:</strong></p>";
-    message += "<ul>";
-    $.each(uniqueMessages, function(index, errorMessage) {
-      message += "<li>" + errorMessage + "</li>";
-    });
-    message += "</ul>";
+    // use alertMessage function to generate string for alert
+    var message = _this.options.alertMessage.call(_this, uniqueMessages);
     
     // show alert
     _this.alert(message);
@@ -409,6 +406,18 @@ var Validator = function(form, options) {
     alert.slideUp(500, function() {
       alert.remove();
     });
+  }
+  
+  // default callback to generate alert message
+  function alertMessage(messages) {
+    var message = "<p><strong>Looks like there are some problems with the highlighted fields. Please address the following errors:</strong></p>";
+    message += "<ul>";
+    $.each(messages, function(index, errorMessage) {
+      message += "<li>" + errorMessage + "</li>";
+    });
+    message += "</ul>";
+    
+    return message;
   }
   
   // default callback to show processing indicator
