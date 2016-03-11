@@ -1,6 +1,6 @@
 {
   "name": "OI-Validate",
-  "version": "0.10.1",
+  "version": "0.11.0",
   "author": "Opportunity International",
   "engines": {
     "node": ">= 0.8.0"
