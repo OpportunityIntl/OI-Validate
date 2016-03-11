@@ -424,7 +424,7 @@ var Validator = function(form, options) {
   function showProcessing(form) {
     var submitButton = form.find('input[type="submit"], button[type="submit"]');
     var processingButton = $('<button>', {type: 'button', class: submitButton.attr('class') + ' processing-btn', disabled: true});
-    processingButton.html('Processing...');
+    processingButton.html('<span class="loading-indicator monochromatic">Processing...</span>');
     submitButton.hide();
     submitButton.after(processingButton);
   }
