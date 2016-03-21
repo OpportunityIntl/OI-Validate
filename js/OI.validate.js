@@ -72,6 +72,7 @@ var Validator = function(form, options) {
   
   // validate the whole form
   this.validate = function() {
+    
     // start error counter at 0
     var errors = 0;
     
@@ -450,8 +451,6 @@ var Validator = function(form, options) {
   function setupForm() {
     // add 'novalidate' attribute to form to prevent native browser error handling
     _this.form.attr('novalidate', 'novalidate');
-    
-    _this.hideErrors();
     
     // add event handler to validate form on submit
     _this.form.submit(function() {
